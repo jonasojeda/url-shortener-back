@@ -1,0 +1,466 @@
+name: Url
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/url
+    metadata:
+      groupName: Url
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display a listing of the resource.'
+      description: |-
+        This method handles a GET request to retrieve a list of URLs from the database. It allows filtering results based on optional search parameters, ordering results ascending or descending, and paginating the results.
+
+        Accepted query parameters:
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'Optional. A search filter based on partial URL matches.'
+        required: false
+        example: '"example.com".'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      order_desc:
+        name: order_desc
+        description: 'Optional. Sorts the results in descending order by the `created_at` column. Default is true if not specified.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      order_asc:
+        name: order_asc
+        description: 'Optional. Sorts the results in ascending order by the `created_at` column. If present, `order_desc` is not applied.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      unpaginated:
+        name: unpaginated
+        description: 'Optional. If present and true, it returns all results without pagination.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      page:
+        name: page
+        description: 'Optional. The page number for pagination. Defaults to the first page if not specified.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      search: '"example.com".'
+      order_desc: true
+      order_asc: true
+      unpaginated: true
+      page: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": [
+                 {
+                     "id": 3,
+                     "url": "https://www.example.com/",
+                     "url_key": "g9fA6ac8",
+                     "short_url": "http://127.0.0.1:8000/g9fA6ac8"
+                 },
+             ],
+             "current_page": 1,
+             "last_page": 1,
+             "total": 2
+          }
+
+          Additional details:
+
+          - If the `unpaginated` parameter is true, all records will be returned without pagination.
+          - If both `order_asc` and `order_desc` are specified, only the last evaluated parameter will be applied.
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/url
+    metadata:
+      groupName: Url
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a Shortened URL'
+      description: |-
+        This method allows a user to submit a full URL and generates a shortened version of it.
+        The provided URL is validated, ensuring it is a well-formed URL. A unique, random key is generated,
+        and the original URL and its shortened key are stored in the database. If the provided URL is not valid,
+        a validation error is returned.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      url:
+        name: url
+        description: 'The original URL that needs to be shortened.'
+        required: true
+        example: 'https://www.google.com'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      url: 'https://www.google.com'
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+             "data": {
+                 "id": 4,
+                 "url": "https://www.example.com",
+                 "url_key": "Lm2qnRc1",
+                 "short_url": "http://127.0.0.1:8000/Lm2qnRc1"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+             "status": false,
+             "errors": [
+                "The url format is invalid."
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/url/{id}'
+    metadata:
+      groupName: Url
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve the Original URL by its Shortened Key (url_key)'
+      description: |-
+        This method retrieves the original URL associated with a shortened key (`url_key`).
+        It searches the database for the provided key, and if the key exists, returns the original URL.
+        If the key is not found, an error message is returned indicating the URL was not found.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the url.'
+        required: true
+        example: error
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      url_key:
+        name: url_key
+        description: 'The shortened key of the URL to retrieve.'
+        required: true
+        example: abc12345
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: error
+      url_key: abc12345
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": {
+                "id": 1,
+                "url": "https://example.com",
+                "url_key": "abc12345",
+                "created_at": "2024-01-01T12:00:00Z",
+                "updated_at": "2024-01-01T12:00:00Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+             "status": false,
+             "message": "URL not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/url/{id}'
+    metadata:
+      groupName: Url
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the specified resource in storage.'
+      description: 'This method handles a PUT or PATCH request to update an existing URL in the database.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the url.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      url:
+        name: url
+        description: 'Optional. The new URL to update. It must be a valid URL format.'
+        required: false
+        example: '"https://www.google.com".'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      url: '"https://www.google.com".'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": {
+                 "id": 4,
+                 "url": "https://www.example.com",
+                 "url_key": "Lm2qnRc1",
+                 "short_url": "http://127.0.0.1:8000/Lm2qnRc1"
+             }
+          }
+
+          Example JSON response on validation failure:
+
+          ```json
+          {
+            "status": false,
+            "errors": [
+              "The url field must be a valid URL."
+            ]
+          }
+          ```
+
+          Additional details:
+
+          - If the `url` parameter is not provided, the existing URL in the database remains unchanged.
+          - This method validates the incoming request data and returns a 400 response if validation fails.
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/url/{id}'
+    metadata:
+      groupName: Url
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified resource from storage.'
+      description: 'This method handles a DELETE request to remove a URL from the database.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the url.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": {
+                 "id": 4,
+                 "url": "https://www.example.com",
+                 "url_key": "Lm2qnRc1",
+                 "short_url": "http://127.0.0.1:8000/Lm2qnRc1"
+             }
+          }
+
+          Additional details:
+
+          - This method assumes the URL exists in the database. If the URL does not exist, it will return a 404 error by default.
+          - The response will have a status code of 200 (HTTP_OK) upon successful deletion.
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/url/{url_key}'
+    metadata:
+      groupName: Url
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve the Original URL by its Shortened Key (url_key)'
+      description: |-
+        This method retrieves the original URL associated with a shortened key (`url_key`).
+        It searches the database for the provided key, and if the key exists, returns the original URL.
+        If the key is not found, an error message is returned indicating the URL was not found.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      url_key:
+        name: url_key
+        description: 'The shortened key of the URL to retrieve.'
+        required: true
+        example: abc12345
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      url_key: abc12345
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": {
+                "id": 1,
+                "url": "https://example.com",
+                "url_key": "abc12345",
+                "created_at": "2024-01-01T12:00:00Z",
+                "updated_at": "2024-01-01T12:00:00Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+             "status": false,
+             "message": "URL not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

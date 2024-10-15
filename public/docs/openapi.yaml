@@ -1,0 +1,335 @@
+openapi: 3.0.3
+info:
+  title: URL-shortener
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/url:
+    get:
+      summary: 'Display a listing of the resource.'
+      operationId: displayAListingOfTheResource
+      description: "This method handles a GET request to retrieve a list of URLs from the database. It allows filtering results based on optional search parameters, ordering results ascending or descending, and paginating the results.\n\nAccepted query parameters:"
+      parameters:
+        -
+          in: query
+          name: search
+          description: 'Optional. A search filter based on partial URL matches.'
+          example: '"example.com".'
+          required: false
+          schema:
+            type: string
+            description: 'Optional. A search filter based on partial URL matches.'
+            example: '"example.com".'
+        -
+          in: query
+          name: order_desc
+          description: 'Optional. Sorts the results in descending order by the `created_at` column. Default is true if not specified.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'Optional. Sorts the results in descending order by the `created_at` column. Default is true if not specified.'
+            example: true
+        -
+          in: query
+          name: order_asc
+          description: 'Optional. Sorts the results in ascending order by the `created_at` column. If present, `order_desc` is not applied.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'Optional. Sorts the results in ascending order by the `created_at` column. If present, `order_desc` is not applied.'
+            example: true
+        -
+          in: query
+          name: unpaginated
+          description: 'Optional. If present and true, it returns all results without pagination.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'Optional. If present and true, it returns all results without pagination.'
+            example: true
+        -
+          in: query
+          name: page
+          description: 'Optional. The page number for pagination. Defaults to the first page if not specified.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'Optional. The page number for pagination. Defaults to the first page if not specified.'
+            example: 1
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"data\": [\n       {\n           \"id\": 3,\n           \"url\": \"https://www.example.com/\",\n           \"url_key\": \"g9fA6ac8\",\n           \"short_url\": \"http://127.0.0.1:8000/g9fA6ac8\"\n       },\n   ],\n   \"current_page\": 1,\n   \"last_page\": 1,\n   \"total\": 2\n}\n\nAdditional details:\n\n- If the `unpaginated` parameter is true, all records will be returned without pagination.\n- If both `order_asc` and `order_desc` are specified, only the last evaluated parameter will be applied."
+      tags:
+        - Url
+      security: []
+    post:
+      summary: 'Create a Shortened URL'
+      operationId: createAShortenedURL
+      description: "This method allows a user to submit a full URL and generates a shortened version of it.\nThe provided URL is validated, ensuring it is a well-formed URL. A unique, random key is generated,\nand the original URL and its shortened key are stored in the database. If the provided URL is not valid,\na validation error is returned."
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 4
+                    url: 'https://www.example.com'
+                    url_key: Lm2qnRc1
+                    short_url: 'http://127.0.0.1:8000/Lm2qnRc1'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 4
+                      url:
+                        type: string
+                        example: 'https://www.example.com'
+                      url_key:
+                        type: string
+                        example: Lm2qnRc1
+                      short_url:
+                        type: string
+                        example: 'http://127.0.0.1:8000/Lm2qnRc1'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  errors:
+                    - 'The url format is invalid.'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    example:
+                      - 'The url format is invalid.'
+                    items:
+                      type: string
+      tags:
+        - Url
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: 'The original URL that needs to be shortened.'
+                  example: 'https://www.google.com'
+              required:
+                - url
+      security: []
+  '/api/url/{id}':
+    get:
+      summary: 'Retrieve the Original URL by its Shortened Key (url_key)'
+      operationId: retrieveTheOriginalURLByItsShortenedKeyurlKey
+      description: "This method retrieves the original URL associated with a shortened key (`url_key`).\nIt searches the database for the provided key, and if the key exists, returns the original URL.\nIf the key is not found, an error message is returned indicating the URL was not found."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    url: 'https://example.com'
+                    url_key: abc12345
+                    created_at: '2024-01-01T12:00:00Z'
+                    updated_at: '2024-01-01T12:00:00Z'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      url:
+                        type: string
+                        example: 'https://example.com'
+                      url_key:
+                        type: string
+                        example: abc12345
+                      created_at:
+                        type: string
+                        example: '2024-01-01T12:00:00Z'
+                      updated_at:
+                        type: string
+                        example: '2024-01-01T12:00:00Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'URL not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'URL not found'
+      tags:
+        - Url
+      security: []
+    put:
+      summary: 'Update the specified resource in storage.'
+      operationId: updateTheSpecifiedResourceInStorage
+      description: 'This method handles a PUT or PATCH request to update an existing URL in the database.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"data\": {\n       \"id\": 4,\n       \"url\": \"https://www.example.com\",\n       \"url_key\": \"Lm2qnRc1\",\n       \"short_url\": \"http://127.0.0.1:8000/Lm2qnRc1\"\n   }\n}\n\nExample JSON response on validation failure:\n\n```json\n{\n  \"status\": false,\n  \"errors\": [\n    \"The url field must be a valid URL.\"\n  ]\n}\n```\n\nAdditional details:\n\n- If the `url` parameter is not provided, the existing URL in the database remains unchanged.\n- This method validates the incoming request data and returns a 400 response if validation fails."
+      tags:
+        - Url
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: 'Optional. The new URL to update. It must be a valid URL format.'
+                  example: '"https://www.google.com".'
+      security: []
+    delete:
+      summary: 'Remove the specified resource from storage.'
+      operationId: removeTheSpecifiedResourceFromStorage
+      description: 'This method handles a DELETE request to remove a URL from the database.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"data\": {\n       \"id\": 4,\n       \"url\": \"https://www.example.com\",\n       \"url_key\": \"Lm2qnRc1\",\n       \"short_url\": \"http://127.0.0.1:8000/Lm2qnRc1\"\n   }\n}\n\nAdditional details:\n\n- This method assumes the URL exists in the database. If the URL does not exist, it will return a 404 error by default.\n- The response will have a status code of 200 (HTTP_OK) upon successful deletion."
+      tags:
+        - Url
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the url.'
+        example: error
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: url_key
+        description: 'The shortened key of the URL to retrieve.'
+        example: abc12345
+        required: true
+        schema:
+          type: string
+  '/api/url/{url_key}':
+    get:
+      summary: 'Retrieve the Original URL by its Shortened Key (url_key)'
+      operationId: retrieveTheOriginalURLByItsShortenedKeyurlKey
+      description: "This method retrieves the original URL associated with a shortened key (`url_key`).\nIt searches the database for the provided key, and if the key exists, returns the original URL.\nIf the key is not found, an error message is returned indicating the URL was not found."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    url: 'https://example.com'
+                    url_key: abc12345
+                    created_at: '2024-01-01T12:00:00Z'
+                    updated_at: '2024-01-01T12:00:00Z'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      url:
+                        type: string
+                        example: 'https://example.com'
+                      url_key:
+                        type: string
+                        example: abc12345
+                      created_at:
+                        type: string
+                        example: '2024-01-01T12:00:00Z'
+                      updated_at:
+                        type: string
+                        example: '2024-01-01T12:00:00Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'URL not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'URL not found'
+      tags:
+        - Url
+      security: []
+    parameters:
+      -
+        in: path
+        name: url_key
+        description: 'The shortened key of the URL to retrieve.'
+        example: abc12345
+        required: true
+        schema:
+          type: string
+tags:
+  -
+    name: Url
+    description: ''

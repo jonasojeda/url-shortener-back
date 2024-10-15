@@ -1,0 +1,331 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "URL-shortener",
+        "_postman_id": "464716be-9209-4e05-bcc5-9986c6ab9b87",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Url",
+            "description": "",
+            "item": [
+                {
+                    "name": "Display a listing of the resource.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/url",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "%22example.com%22.",
+                                    "description": "Optional. A search filter based on partial URL matches.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_desc",
+                                    "value": "1",
+                                    "description": "Optional. Sorts the results in descending order by the `created_at` column. Default is true if not specified.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_asc",
+                                    "value": "1",
+                                    "description": "Optional. Sorts the results in ascending order by the `created_at` column. If present, `order_desc` is not applied.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "unpaginated",
+                                    "value": "1",
+                                    "description": "Optional. If present and true, it returns all results without pagination.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Optional. The page number for pagination. Defaults to the first page if not specified.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/url?search=%22example.com%22.&order_desc=1&order_asc=1&unpaginated=1&page=1"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This method handles a GET request to retrieve a list of URLs from the database. It allows filtering results based on optional search parameters, ordering results ascending or descending, and paginating the results.\n\nAccepted query parameters:",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": [\n       {\n           \"id\": 3,\n           \"url\": \"https:\/\/www.example.com\/\",\n           \"url_key\": \"g9fA6ac8\",\n           \"short_url\": \"http:\/\/127.0.0.1:8000\/g9fA6ac8\"\n       },\n   ],\n   \"current_page\": 1,\n   \"last_page\": 1,\n   \"total\": 2\n}\n\nAdditional details:\n\n- If the `unpaginated` parameter is true, all records will be returned without pagination.\n- If both `order_asc` and `order_desc` are specified, only the last evaluated parameter will be applied.",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create a Shortened URL",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/url",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/url"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"url\":\"https:\\\/\\\/www.google.com\"}"
+                        },
+                        "description": "This method allows a user to submit a full URL and generates a shortened version of it.\nThe provided URL is validated, ensuring it is a well-formed URL. A unique, random key is generated,\nand the original URL and its shortened key are stored in the database. If the provided URL is not valid,\na validation error is returned.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"data\": {\n       \"id\": 4,\n       \"url\": \"https:\/\/www.example.com\",\n       \"url_key\": \"Lm2qnRc1\",\n       \"short_url\": \"http:\/\/127.0.0.1:8000\/Lm2qnRc1\"\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n   \"status\": false,\n   \"errors\": [\n      \"The url format is invalid.\"\n   ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Retrieve the Original URL by its Shortened Key (url_key)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/url\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/url\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "error",
+                                    "description": "The ID of the url."
+                                },
+                                {
+                                    "id": "url_key",
+                                    "key": "url_key",
+                                    "value": "abc12345",
+                                    "description": "The shortened key of the URL to retrieve."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This method retrieves the original URL associated with a shortened key (`url_key`).\nIt searches the database for the provided key, and if the key exists, returns the original URL.\nIf the key is not found, an error message is returned indicating the URL was not found.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": {\n      \"id\": 1,\n      \"url\": \"https:\/\/example.com\",\n      \"url_key\": \"abc12345\",\n      \"created_at\": \"2024-01-01T12:00:00Z\",\n      \"updated_at\": \"2024-01-01T12:00:00Z\"\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n   \"status\": false,\n   \"message\": \"URL not found\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update the specified resource in storage.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/url\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/url\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the url."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"url\":\"\\\"https:\\\/\\\/www.google.com\\\".\"}"
+                        },
+                        "description": "This method handles a PUT or PATCH request to update an existing URL in the database.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": {\n       \"id\": 4,\n       \"url\": \"https:\/\/www.example.com\",\n       \"url_key\": \"Lm2qnRc1\",\n       \"short_url\": \"http:\/\/127.0.0.1:8000\/Lm2qnRc1\"\n   }\n}\n\nExample JSON response on validation failure:\n\n```json\n{\n  \"status\": false,\n  \"errors\": [\n    \"The url field must be a valid URL.\"\n  ]\n}\n```\n\nAdditional details:\n\n- If the `url` parameter is not provided, the existing URL in the database remains unchanged.\n- This method validates the incoming request data and returns a 400 response if validation fails.",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove the specified resource from storage.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/url\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/url\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the url."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This method handles a DELETE request to remove a URL from the database.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": {\n       \"id\": 4,\n       \"url\": \"https:\/\/www.example.com\",\n       \"url_key\": \"Lm2qnRc1\",\n       \"short_url\": \"http:\/\/127.0.0.1:8000\/Lm2qnRc1\"\n   }\n}\n\nAdditional details:\n\n- This method assumes the URL exists in the database. If the URL does not exist, it will return a 404 error by default.\n- The response will have a status code of 200 (HTTP_OK) upon successful deletion.",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Retrieve the Original URL by its Shortened Key (url_key)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/url\/:url_key",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/url\/:url_key",
+                            "variable": [
+                                {
+                                    "id": "url_key",
+                                    "key": "url_key",
+                                    "value": "abc12345",
+                                    "description": "The shortened key of the URL to retrieve."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This method retrieves the original URL associated with a shortened key (`url_key`).\nIt searches the database for the provided key, and if the key exists, returns the original URL.\nIf the key is not found, an error message is returned indicating the URL was not found.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": {\n      \"id\": 1,\n      \"url\": \"https:\/\/example.com\",\n      \"url_key\": \"abc12345\",\n      \"created_at\": \"2024-01-01T12:00:00Z\",\n      \"updated_at\": \"2024-01-01T12:00:00Z\"\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n   \"status\": false,\n   \"message\": \"URL not found\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}
