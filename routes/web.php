@@ -18,7 +18,7 @@ Route::get('/', function () {
     return '©' .  Carbon\Carbon::now()->format('Y') . ' ' . env('APP_NAME');
 });
 
-Route::apiResource('url', UrlController::class)->only(['index', 'store', 'show', 'destroy'])
-    ->parameters(['url', 'url']);
+// Route::apiResource('url', UrlController::class)->only(['index', 'store', 'show', 'destroy'])
+//     ->parameters(['url', 'url']);
 
-Route::get('url/{url_key}', [UrlController::class, 'show']);
+// Route::get('url/{url_key}', [UrlController::class, 'show']);
